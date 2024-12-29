@@ -13,18 +13,28 @@
    0 = Normal Samples  
    1 = Cancer Samples
    
-   ![Datasets Description](https://github.com/user-attachments/assets/287ba32e-388c-450c-8ca9-2e541bd1f32b)
-
-   # Load datasets
+   ![Datasets Description](https://github.com/user-attachments/assets/287ba32e-388c-450c-8ca9-2e541bd1f32b)  
+   
+# Load necessary libraries:
+```
+library(caret)
+library(randomForest)
+library(varSelRF)
+library(nnet)
+library(e1071)
+library(xgboost)
+library(SHAPforxgboost)
+library(pROC)
+```
+# Import datasets:
    ```
 metaset <- read.csv("meta_dataset.csv")
 validation <- read.csv("validation_dataset.csv")
 ```
 
-# Split meta dataset into training and testing sets (80/20)
+# Split meta dataset into training and testing sets (80/20):
 ```
 set.seed(1234)
-library(caret)
 index <- createDataPartition(metaset$Target, p = 0.8, list = FALSE)
 Train_1 <- metaset[index,]
 Test_1 <- metaset[-index,]
@@ -34,11 +44,8 @@ Test_1 <- metaset[-index,]
     * **VarSelRF** (Variable Selection with Random Forest)  
     * **SHAP** (SHapley Additive exPlanations)
 
-# Feature selection with VarSelRF  
+# Feature selection with VarSelRF: 
 ```
-library(randomForest)  
-library(varSelRF)
-
 set.seed(42)  
 Train_1_genes <- Train_1[, -1]  
 Train_1_target <- as.factor(Train_1$Target)  
@@ -60,10 +67,8 @@ varSelRF_model <- varSelRF(Train_1_genes,
 var_features <- varSelRF_model$selected.vars
 write.csv(var, file = "Selected_features_varselRF.csv")
 ```
-# Feature selection with SHAP  
+# Feature selection with SHAP:    
 ```
-library(xgboost)
-library(SHAPforxgboost)
 # Train an XGBoost model for SHAP
 xgb_params <- list(eta = 0.01, max_depth = 10, eval_metric = "auc")
 xgb_model <- xgboost(data = as.matrix(Train_1_genes),
@@ -86,7 +91,8 @@ write.csv(shap, file = "Selected_features_SHAP.csv")
 * Split the trimmed external training set into:  
     * **Internal Training Set:** (70%) for model training  
     * **Internal Testing Set:** (30%) for internal evaluation
- # Split external training set into internal training/testing sets (70/30) 
+ 
+ # Split external training set into internal training/testing sets (70/30):   
  ```
 set.seed(5678)
 train_index <- createDataPartition(Train_1_target, 
@@ -97,7 +103,7 @@ Test_2 <- Train_1[-train_index, ]
 Train_2_target <- as.factor(Train_2$Target)
 Test_2_target <- as.factor(Test_2$Target)
 ```
-# Prepare Train2, Test2, Test1 data using varselRF features   
+# Prepare Train2, Test2, Test1 data using varselRF features:    
 ```
 Train_2_varselRF <- Train_2[,..var]
 Test_2_varselRF <- Test_2[,..var]
@@ -120,7 +126,7 @@ test_sets_varSelRF <- list(
                     Test_target = Validation_target)
 )
 ```
-# Prepare Train2, Test2, Test1 data using SHAP features 
+# Prepare Train2, Test2, Test1 data using SHAP features:   
 ```
 Train_2_SHAP <- Train_2[,..shap]
 Test_2_SHAP <- Test_2[,..shap]
@@ -151,7 +157,8 @@ Machine learning models include:
     * Artificial Neural Networks (ANN)
     * Support Vector Machines (SVM) with radial kernel
     * Support Vector Machines (SVM) with polynomial kernel
-  # Train and Evaluate Models
+ 
+# Train and Evaluate Models:  
 ```
 # Prepare a list to store results for all models across all test sets
 model_names <- c("RandomForest", "ANN", "SVM_Radial", "SVM_Polynomial")
@@ -171,7 +178,7 @@ model_id <- switch(model_name,
                     "SVM_Radial" = "svmRadial",
                     "SVM_Polynomial" = "svmPoly")
 ```
-# Train and Evaluate Models with varSelRF datasets
+# Train and Evaluate Models with varSelRF dataset:  
 ```
 trained_model_varSelRF <- caret::train(x = test_sets_varSelRF$internal$Train_data,
                                 y = test_sets_varSelRF$internal$Train_target,
@@ -197,7 +204,7 @@ cm <- confusionMatrix(predictions, test_target)
 auc_value <- auc(as.numeric(test_target), as.numeric(predictions))
 
 ```
-# Train and Evaluate Models with SHAP datasets
+# Train and Evaluate Models with SHAP datasets:  
 ```
 trained_model_SHAP <- caret::train(x = test_sets_SHAP$internal$Train_data,
                                 y = test_sets_SHAP$internal$Train_target,
@@ -232,7 +239,7 @@ Evaluate models using:
 *	F1 Score
 *	AUC
   
-# Store results
+# Store results:  
 ```
     model_results[[test_set_name]] <- list(
       confusion_matrix = cm,
