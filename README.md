@@ -2,13 +2,17 @@
  This repository proposes a comprehensive workflow for feature selection and machine learning-based breast cancer classification. The pipeline is built for reliable feature selection and model evaluation across internal, external, and independent validation datasets. A detailed explanation of the procedure, complete with pertinent code snippets, is provided below.
  ## Workflow Overview
  This workflow follows these main steps:
-
+ 
+![image](https://github.com/user-attachments/assets/0f5920b2-498b-4545-b8f4-94d97412abb2)
 
 ### 1.	Data Preparation
  * Split the **meta dataset** (61 Normal, 71 Cancer) into:  
     * **External Training Set:** (80%) for feature selection and training  
     * **External Testing Set:** (20%) for model evaluation  
  * 	Use an independent **validation dataset** (42 Normal, 42 Cancer) for additional evaluation
+   
+   ![Datasets Description](https://github.com/user-attachments/assets/287ba32e-388c-450c-8ca9-2e541bd1f32b)
+
    # Load datasets
    ```
 metaset <- read.csv("meta_dataset.csv")
