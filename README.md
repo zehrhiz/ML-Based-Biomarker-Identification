@@ -9,7 +9,9 @@
  * Split the **meta dataset** (61 Normal, 71 Cancer) into:  
     * **External Training Set:** (80%) for feature selection and training  
     * **External Testing Set:** (20%) for model evaluation  
- * 	Use an independent **validation dataset** (42 Normal, 42 Cancer) for additional evaluation
+ * 	Use an independent **validation dataset** (42 Normal, 42 Cancer) for additional evaluation  
+   0 = Normal Samples  
+   1 = Cancer Samples
    
    ![Datasets Description](https://github.com/user-attachments/assets/287ba32e-388c-450c-8ca9-2e541bd1f32b)
 
