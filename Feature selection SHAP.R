@@ -39,7 +39,7 @@ SHAP_a <- tibble::rownames_to_column(shap_a, "Features")
 shap <- SHAP_a$Features[SHAP_a$`shap_values$mean_shap_score` > 0]
 write.csv(shap, file = "Selected_features_SHAP.csv")
 
-# Step 3: Split training data further into 70/30 for model training and testing
+# Split training data further into 70/30 for model training and testing
 set.seed(5678)
 train_index <- createDataPartition(Train_1_target, 
                                    p = 0.7, 
